@@ -14,3 +14,9 @@ fun <T> T.dump(message: String? = null): T {
     println(this)
     return this
 }
+
+
+fun Iterable<Long>.product(): Long = this.fold(1L) { acc, cur -> acc * cur}
+fun Iterable<Int>.product(): Int = this.fold(1) { acc, cur -> acc * cur}
+fun <T> Iterable<T>.product(transform: (T) -> Long): Long = this.fold(1L) { acc, cur -> acc * transform(cur)}
+fun <T> Iterable<T>.product(transform: (T) -> Int): Int = this.fold(1) { acc, cur -> acc * transform(cur)}
