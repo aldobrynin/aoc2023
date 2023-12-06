@@ -1,19 +1,43 @@
 package day03
 
+import common.Puzzle
 import common.V
-import dump
 import product
-import readInput
+import solveAndVerify
 
-fun main() {
-    fun area8(v: List<V>, map: Array<CharArray>): List<V> = v.flatMap { it.area8(map) }.distinct()
+private data class PartNumber(val number: Long, val coordinates: List<V>)
 
-    fun isSymbol(v: V, map: Array<CharArray>): Boolean = map[v.y][v.x] != '.' && !map[v.y][v.x].isDigit()
+private class Day03 : Puzzle<Array<Array<Char>>>(day = 3) {
+    override fun parse(rawInput: List<String>): Array<Array<Char>> {
+        return rawInput.map { it.toCharArray().toTypedArray() }.toTypedArray()
+    }
 
-    fun findNumbers(map: Array<CharArray>): List<Pair<Int, List<V>>> {
-        val numbers = mutableListOf<Pair<Int, List<V>>>()
+    override fun part1(input: Array<Array<Char>>): Long {
+        return findNumbers(input)
+            .filter { num -> area8(num.coordinates, input).any { isSymbol(it, input) } }
+            .sumOf { it.number }
+    }
+
+    override fun part2(input: Array<Array<Char>>): Long {
+        return findNumbers(input)
+            .flatMap { x ->
+                area8(x.coordinates, input).filter { n -> input[n.y][n.x] == '*' }.map { Pair(x.number, it) }
+            }
+            .groupBy { it.second }
+            .filter { it.value.size == 2 }
+            .values
+            .map { pair -> pair.map { it.first } }
+            .sumOf { x -> x.product() }
+    }
+
+    private fun area8(v: List<V>, map: Array<Array<Char>>): List<V> = v.flatMap { it.area8(map) }.distinct()
+
+    private fun isSymbol(v: V, map: Array<Array<Char>>): Boolean = map[v.y][v.x] != '.' && !map[v.y][v.x].isDigit()
+
+    private fun findNumbers(map: Array<Array<Char>>): List<PartNumber> {
+        val numbers = mutableListOf<PartNumber>()
         for ((rowIndex, row) in map.withIndex()) {
-            var number = 0
+            var number = 0L
             val currentNumberCells = mutableListOf<V>()
             for ((colIndex, char) in row.withIndex()) {
                 if (char.isDigit()) {
@@ -22,7 +46,7 @@ fun main() {
                 }
                 val isEndOfNumber = colIndex == row.lastIndex || !char.isDigit()
                 if (currentNumberCells.isNotEmpty() && isEndOfNumber) {
-                    numbers.add(Pair(number, currentNumberCells.toList()))
+                    numbers.add(PartNumber(number, currentNumberCells.toList()))
                     number = 0
                     currentNumberCells.clear()
                 }
@@ -30,31 +54,13 @@ fun main() {
         }
         return numbers
     }
-
-
-    fun part1(input: Array<CharArray>): Int {
-        return findNumbers(input)
-            .filter { num -> area8(num.second, input).any { isSymbol(it, input) } }
-            .sumOf { it.first }
-    }
-
-    fun part2(input: Array<CharArray>): Int {
-        return findNumbers(input)
-            .flatMap { x -> area8(x.second, input).filter { n -> input[n.y][n.x] == '*' }.map { Pair(x.first, it) } }
-            .groupBy { it.second }
-            .filter { it.value.size == 2 }
-            .values
-            .map { pair -> pair.map { it.first } }
-            .sumOf { x -> x.product() }
-    }
-
-    val testInput = readInputParsed("sample")
-    check(part1(testInput) == 4361)
-    check(part2(testInput) == 467835)
-
-    val input = readInputParsed("input")
-    part1(input).dump("part1: ")
-    part2(input).dump("part2: ")
 }
 
-fun readInputParsed(name: String) = readInput(3, name).map{line -> line.toCharArray()}.toTypedArray()
+fun main() {
+    val puzzle = Day03()
+
+    solveAndVerify({ puzzle.part1(puzzle.parse("sample.txt")) }, expected = 4361)
+    solveAndVerify({ puzzle.part2(puzzle.parse("sample.txt")) }, expected = 467835)
+
+    puzzle.run()
+}

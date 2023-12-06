@@ -1,45 +1,45 @@
 package day04
 
-import dump
-import measureAndPrint
-import readInput
+import common.Puzzle
 import solveAndVerify
 
-data class Card(val id: Int, val winningCards: Set<Int>, val hand: List<Int>){
+private data class Card(val id: Int, val winningCards: Set<Int>, val hand: List<Int>) {
     val matchCount = hand.intersect(winningCards).size
 }
 
-fun main() {
-    fun part1(input: List<Card>): Int = input.sumOf {
+private class Day04 : Puzzle<List<Card>>(day = 4) {
+    override fun parse(rawInput: List<String>): List<Card> {
+        fun toIntArray(s: String) = s.split(' ').filterNot { it.isBlank() }.map { it.toInt() }
+
+        fun parseLine(line: String): Card {
+            val reg = Regex("Card\\s+(?<id>\\d+): (.*) \\| (.*)")
+            val (id, win, hand) = reg.find(line)!!.destructured
+            return Card(id.toInt(), toIntArray(win).toSet(), toIntArray(hand))
+        }
+        return rawInput.map(::parseLine)
+    }
+
+    override fun part1(input: List<Card>): Long = input.sumOf {
         when {
             it.matchCount > 0 -> 1 shl (it.matchCount - 1)
             else -> 0
-        }
+        }.toLong()
     }
 
-    fun part2(input: List<Card>): Int {
-        val counts = input.map { 1 }.toIntArray()
+    override fun part2(input: List<Card>): Long {
+        val counts = input.map { 1L }.toTypedArray()
         for (card in input)
             for (copy in 1..card.matchCount)
                 counts[card.id - 1 + copy] += counts[card.id - 1]
         return counts.sum()
     }
-
-    val testInput = readInputParsed("sample")
-    solveAndVerify(testInput, ::part1, expected = 13)
-    solveAndVerify(testInput, ::part2, expected = 30)
-
-    val input = readInputParsed("input")
-    measureAndPrint { part1(input).dump("part1: ") }
-    measureAndPrint { part2(input).dump("part2: ") }
 }
 
-fun toIntArray(s: String) = s.split(' ').filterNot { it.isBlank() }.map { it.toInt() }
+fun main() {
+    val puzzle = Day04()
 
-fun parseLine(line: String): Card {
-    val reg = Regex("Card\\s+(?<id>\\d+): (.*) \\| (.*)")
-    val (id, win, hand) = reg.find(line)!!.destructured
-    return Card(id.toInt(), toIntArray(win).toSet(), toIntArray(hand))
+    solveAndVerify({ puzzle.part1(puzzle.parse("sample.txt")) }, expected = 13)
+    solveAndVerify({ puzzle.part2(puzzle.parse("sample.txt")) }, expected = 30)
+
+    puzzle.run()
 }
-
-fun readInputParsed(name: String) = readInput(4, name).map(::parseLine)

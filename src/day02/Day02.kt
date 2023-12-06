@@ -1,51 +1,51 @@
 package day02
 
-import dump
-import readInput
+import common.Puzzle
+import product
+import solveAndVerify
 import kotlin.math.max
 
-fun main() {
-    val cubesCount = mapOf("red" to 12, "green" to 13, "blue" to 14)
-    fun isPossible(round: List<Pair<String, Int>>): Boolean {
-        return round.all { it.second <= cubesCount.getValue(it.first) }
+private data class Game(val id: Int, val rounds: List<List<Pair<String, Int>>>)
+
+private class Day02 : Puzzle<List<Game>>(day = 2) {
+    override fun parse(rawInput: List<String>): List<Game> {
+        // Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+        fun parse(line: String): Game {
+            val idAndRoundsRaw = line.substringAfter("Game ").split(':')
+            val id = idAndRoundsRaw[0].toInt()
+            val rounds = idAndRoundsRaw[1].split(';')
+                .map { roundRaw ->
+                    roundRaw.split(',')
+                        .map { it.trim().split(" ") }
+                        .map { Pair(it[1], it[0].toInt()) }
+                }
+            return Game(id, rounds)
+        }
+        return rawInput.map(::parse)
     }
 
-    fun part1(input: List<Game>): Int {
-        return input.filter { it.rounds.all(::isPossible) }.sumOf { it.id }
+    override fun part1(input: List<Game>): Long {
+        val cubesCount = mapOf("red" to 12, "green" to 13, "blue" to 14)
+        fun isPossible(round: List<Pair<String, Int>>): Boolean =
+            round.all { it.second <= cubesCount.getValue(it.first) }
+        return input.filter { it.rounds.all(::isPossible) }.sumOf { it.id.toLong() }
     }
 
-    fun part2(input: List<Game>): Int {
+    override fun part2(input: List<Game>): Long {
         return input.map { game ->
             game.rounds.flatten()
                 .groupingBy { it.first }
-                .fold(0) { acc, x -> max(acc, x.second) }
-                .values.fold(1) { acc, current -> acc * current }
+                .fold(0L) { acc, x -> max(acc, x.second.toLong()) }
+                .values.product()
         }.sumOf { it }
     }
-
-    val testInput = readInputParsed("sample")
-    check(part1(testInput) == 8)
-    check(part2(testInput) == 2286)
-
-    val input = readInputParsed("input")
-    part1(input).dump("part1: ")
-    part2(input).dump("part2: ")
 }
 
+fun main() {
+    val puzzle = Day02()
 
-fun readInputParsed(name: String): List<Game> = readInput(2, name).map(::parse)
+    solveAndVerify({ puzzle.part1(puzzle.parse("sample.txt")) }, expected = 8)
+    solveAndVerify({ puzzle.part2(puzzle.parse("sample.txt")) }, expected = 2286)
 
-// Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-fun parse(line: String): Game {
-    val idAndRoundsRaw = line.substringAfter("Game ").split(':')
-    val id = idAndRoundsRaw[0].toInt()
-    val rounds = idAndRoundsRaw[1].split(';')
-        .map { roundRaw ->
-            roundRaw.split(',')
-                .map { it.trim().split(" ") }
-                .map { Pair(it[1], it[0].toInt()) }
-        }
-    return Game(id, rounds)
+    puzzle.run()
 }
-
-data class Game(val id: Int, val rounds: List<List<Pair<String, Int>>>)

@@ -1,32 +1,27 @@
 package day05
 
-import dump
-import product
-import readInput
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.sqrt
-import kotlin.time.measureTime
+import common.Puzzle
+import solveAndVerify
 
-fun main() {
-    fun part1(input: List<String>): Int {
+const val DAY = 5
+
+private class Day05 : Puzzle<List<String>>(day = DAY) {
+    override fun parse(rawInput: List<String>): List<String> = rawInput
+
+    override fun part1(input: List<String>): Long {
         return 0
     }
 
-    fun part2(input: List<String>): Int {
+    override fun part2(input: List<String>): Long {
         return 0
     }
-
-    val testInput = readInputParsed("sample")
-    check(part1(testInput) == 288)
-    check(part2(testInput) == 71503)
-
-    val executionTime = measureTime {
-        val input = readInputParsed("input")
-        part1(input).dump("part1: ")
-        part2(input).dump("part2: ")
-    }
-    executionTime.dump("Executed in ")
 }
 
-fun readInputParsed(name: String) = readInput(5, name)
+fun main() {
+    val puzzle = Day05()
+
+    solveAndVerify({ puzzle.part1(puzzle.parse("sample.txt")) }, expected = 0)
+    solveAndVerify({ puzzle.part2(puzzle.parse("sample.txt")) }, expected = 0)
+
+    puzzle.run()
+}
