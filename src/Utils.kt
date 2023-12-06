@@ -1,5 +1,6 @@
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
+import kotlin.time.measureTime
 
 /**
  * Reads lines from the given input txt file.
@@ -15,6 +16,14 @@ fun <T> T.dump(message: String? = null): T {
     return this
 }
 
+fun <TInput, TResult : Comparable<TResult>> solveAndVerify(input: TInput, solver: (TInput) -> TResult, expected: TResult) {
+    val result = solver(input)
+    if (result != expected) {
+        throw Exception("Expected result is '$expected', but got '$result'")
+    }
+}
+
+fun measureAndPrint(action: () -> Unit) = measureTime(action).dump("Executed in ")
 
 fun Iterable<Long>.product(): Long = this.fold(1L) { acc, cur -> acc * cur}
 fun Iterable<Int>.product(): Int = this.fold(1) { acc, cur -> acc * cur}
