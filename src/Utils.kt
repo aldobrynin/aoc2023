@@ -3,11 +3,15 @@ import kotlin.time.measureTime
 /**
  * The cleaner shorthand for printing output.
  */
-fun <T> T.dump(message: String? = null): T {
+fun <T> T.dump(message: String? = null, transform: ((T) -> Any)? = null): T {
     if (message != null) print(message)
-    println(this)
+    val objectToPrint = if (transform == null) this else transform(this)
+    println(objectToPrint)
     return this
 }
+
+fun String.toIntArray(delimiters: String = " ") = this.split(delimiters).filterNot { it.isBlank() }.map { it.toInt() }
+fun String.toLongArray(delimiters: String = " ") = this.split(delimiters).filterNot { it.isBlank() }.map { it.toLong() }
 
 fun <TResult : Comparable<TResult>> solveAndVerify(solver: () -> TResult, expected: TResult) {
     val result = solver()

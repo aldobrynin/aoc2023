@@ -2,6 +2,7 @@ package day04
 
 import common.Puzzle
 import solveAndVerify
+import toIntArray
 
 private data class Card(val id: Int, val winningCards: Set<Int>, val hand: List<Int>) {
     val matchCount = hand.intersect(winningCards).size
@@ -9,12 +10,10 @@ private data class Card(val id: Int, val winningCards: Set<Int>, val hand: List<
 
 private class Day04 : Puzzle<List<Card>>(day = 4) {
     override fun parse(rawInput: List<String>): List<Card> {
-        fun toIntArray(s: String) = s.split(' ').filterNot { it.isBlank() }.map { it.toInt() }
-
         fun parseLine(line: String): Card {
             val reg = Regex("Card\\s+(?<id>\\d+): (.*) \\| (.*)")
             val (id, win, hand) = reg.find(line)!!.destructured
-            return Card(id.toInt(), toIntArray(win).toSet(), toIntArray(hand))
+            return Card(id.toInt(), win.toIntArray().toSet(), hand.toIntArray())
         }
         return rawInput.map(::parseLine)
     }
