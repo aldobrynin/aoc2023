@@ -26,3 +26,6 @@ fun Iterable<Long>.product(): Long = this.fold(1L) { acc, cur -> acc * cur }
 fun Iterable<Int>.product(): Int = this.fold(1) { acc, cur -> acc * cur }
 fun <T> Iterable<T>.product(transform: (T) -> Long): Long = this.fold(1L) { acc, cur -> acc * transform(cur) }
 fun <T> Iterable<T>.product(transform: (T) -> Int): Int = this.fold(1) { acc, cur -> acc * transform(cur) }
+
+fun <T> List<List<T>>.rows(): Iterable<List<T>> = this
+fun <T> List<List<T>>.columns(): Iterable<List<T>> = this.first().indices.map { colIndex -> this.indices.map { rowIndex -> this[rowIndex][colIndex] } }

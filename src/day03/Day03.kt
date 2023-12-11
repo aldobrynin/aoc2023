@@ -7,18 +7,18 @@ import solveAndVerify
 
 private data class PartNumber(val number: Long, val coordinates: List<V>)
 
-private class Day03 : Puzzle<Array<Array<Char>>>(day = 3) {
-    override fun parse(rawInput: List<String>): Array<Array<Char>> {
-        return rawInput.map { it.toCharArray().toTypedArray() }.toTypedArray()
-    }
+private typealias ParsedInput = List<List<Char>>
 
-    override fun part1(input: Array<Array<Char>>): Long {
+private class Day03 : Puzzle<ParsedInput>(day = 3) {
+    override fun parse(rawInput: List<String>): ParsedInput = rawInput.map { it.toList() }
+
+    override fun part1(input: ParsedInput): Long {
         return findNumbers(input)
             .filter { num -> area8(num.coordinates, input).any { isSymbol(it, input) } }
             .sumOf { it.number }
     }
 
-    override fun part2(input: Array<Array<Char>>): Long {
+    override fun part2(input: ParsedInput): Long {
         return findNumbers(input)
             .flatMap { x ->
                 area8(x.coordinates, input).filter { n -> input[n.y][n.x] == '*' }.map { Pair(x.number, it) }
@@ -30,11 +30,11 @@ private class Day03 : Puzzle<Array<Array<Char>>>(day = 3) {
             .sumOf { x -> x.product() }
     }
 
-    private fun area8(v: List<V>, map: Array<Array<Char>>): List<V> = v.flatMap { it.area8(map) }.distinct()
+    private fun area8(v: List<V>, map: List<List<Char>>): List<V> = v.flatMap { it.area8(map) }.distinct()
 
-    private fun isSymbol(v: V, map: Array<Array<Char>>): Boolean = map[v.y][v.x] != '.' && !map[v.y][v.x].isDigit()
+    private fun isSymbol(v: V, map: List<List<Char>>): Boolean = map[v.y][v.x] != '.' && !map[v.y][v.x].isDigit()
 
-    private fun findNumbers(map: Array<Array<Char>>): List<PartNumber> {
+    private fun findNumbers(map: List<List<Char>>): List<PartNumber> {
         val numbers = mutableListOf<PartNumber>()
         for ((rowIndex, row) in map.withIndex()) {
             var number = 0L
