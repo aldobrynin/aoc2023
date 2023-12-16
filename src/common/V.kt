@@ -22,7 +22,7 @@ data class V(val x: Int, val y: Int) {
     fun area8(map: List<List<Char>>): List<V> = neighbors8().filter { it.belongsTo(map) }
     fun area4(map: List<List<Char>>): List<V> = neighbors4().filter { it.belongsTo(map) }
 
-    private fun belongsTo(map: List<List<Char>>): Boolean = map.indices.contains(y) && map[0].indices.contains(x)
+    fun belongsTo(map: Collection<Collection<Char>>): Boolean = map.indices.contains(y) && map.first().indices.contains(x)
     operator fun minus(start: V): V = V(x - start.x, y - start.y)
     operator fun unaryMinus(): V = V(-x, -y)
 
