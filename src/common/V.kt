@@ -19,10 +19,10 @@ data class V(val x: Int, val y: Int) {
 
     operator fun plus(other: V): V = V(x + other.x, y + other.y)
 
-    fun area8(map: List<List<Char>>): List<V> = neighbors8().filter { it.belongsTo(map) }
-    fun area4(map: List<List<Char>>): List<V> = neighbors4().filter { it.belongsTo(map) }
+    fun <T> area8(map: List<List<T>>): List<V> = neighbors8().filter { it.belongsTo(map) }
+    fun <T> area4(map: List<List<T>>): List<V> = neighbors4().filter { it.belongsTo(map) }
 
-    fun belongsTo(map: Collection<Collection<Char>>): Boolean = map.indices.contains(y) && map.first().indices.contains(x)
+    fun <T> belongsTo(map: Collection<Collection<T>>): Boolean = map.indices.contains(y) && map.first().indices.contains(x)
     operator fun minus(start: V): V = V(x - start.x, y - start.y)
     operator fun unaryMinus(): V = V(-x, -y)
 
