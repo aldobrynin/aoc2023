@@ -1,8 +1,8 @@
 package day08
 
 import common.Puzzle
+import lcm
 import solveAndVerify
-import java.math.BigInteger
 
 private class Game(val directions: String, val network: Map<String, Pair<String, String>>) {
     companion object {
@@ -32,8 +32,8 @@ private class Day08 : Puzzle<ParsedInput>(day = 8) {
 
     override fun part2(input: ParsedInput): Long {
         return input.network.keys.filter { it.endsWith('A') }
-            .map { start -> countSteps(start, input) { it.endsWith('Z') }.toBigInteger() }
-            .fold(BigInteger.valueOf(1L), ::lcm).toLong()
+            .map { start -> countSteps(start, input) { it.endsWith('Z') } }
+            .lcm()
     }
 
     fun countSteps(start: String, game: Game, isExit: (String) -> Boolean): Long {
@@ -42,8 +42,6 @@ private class Day08 : Puzzle<ParsedInput>(day = 8) {
         while (!isExit(current)) current = game.getNextNode(current, step++)
         return step
     }
-
-    fun lcm(a: BigInteger, b: BigInteger): BigInteger = a * b / a.gcd(b)
 }
 
 fun main() {

@@ -29,3 +29,10 @@ fun <T> Iterable<T>.product(transform: (T) -> Int): Int = this.fold(1) { acc, cu
 
 fun <T> List<List<T>>.rows(): Iterable<List<T>> = this
 fun <T> List<List<T>>.columns(): Iterable<List<T>> = this.first().indices.map { colIndex -> this.indices.map { rowIndex -> this[rowIndex][colIndex] } }
+
+
+fun lcm(a: Long, b: Long): Long = a * b / gcd(a, b)
+
+fun Iterable<Long>.lcm(): Long = this.fold(1L, ::lcm)
+
+fun gcd(a: Long, b: Long): Long = if (b == 0L) a else gcd(b, a % b)
