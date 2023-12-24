@@ -1,3 +1,4 @@
+import common.V
 import kotlin.time.measureTime
 
 /**
@@ -30,6 +31,7 @@ fun <T> Iterable<T>.product(transform: (T) -> Int): Int = this.fold(1) { acc, cu
 fun <T> List<List<T>>.rows(): Iterable<List<T>> = this
 fun <T> List<List<T>>.columns(): Iterable<List<T>> = this.first().indices.map { colIndex -> this.indices.map { rowIndex -> this[rowIndex][colIndex] } }
 
+fun <T> Collection<Collection<T>>.coordinates(): Iterable<V> = this.flatMapIndexed { y, row -> List(row.size) { x -> V(x, y) } }
 
 fun lcm(a: Long, b: Long): Long = a * b / gcd(a, b)
 
