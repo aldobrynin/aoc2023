@@ -11,8 +11,8 @@ fun <T> T.dump(message: String? = null, transform: ((T) -> Any)? = null): T {
     return this
 }
 
-fun String.toIntArray(delimiters: String = " ") = this.split(delimiters).filterNot { it.isBlank() }.map { it.toInt() }
-fun String.toLongArray(delimiters: String = " ") = this.split(delimiters).filterNot { it.isBlank() }.map { it.toLong() }
+fun String.toIntArray(delimiters: String = " ") = this.split(delimiters).filterNot { it.isBlank() }.map { it.trim().toInt() }
+fun String.toLongArray(delimiters: String = " ") = this.split(delimiters).filterNot { it.isBlank() }.map { it.trim().toLong() }
 
 fun <TResult : Comparable<TResult>> solveAndVerify(solver: () -> TResult, expected: TResult) {
     val result = solver()
