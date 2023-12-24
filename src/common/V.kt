@@ -15,7 +15,7 @@ data class V(val x: Int, val y: Int) {
     }
 
     private fun neighbors8(): List<V> = dir8().map { it + this }
-    private fun neighbors4(): List<V> = dir4().map { it + this }
+    fun neighbors4(): List<V> = dir4().map { it + this }
 
     operator fun plus(other: V): V = V(x + other.x, y + other.y)
 
