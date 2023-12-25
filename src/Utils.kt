@@ -4,10 +4,9 @@ import kotlin.time.measureTime
 /**
  * The cleaner shorthand for printing output.
  */
-fun <T> T.dump(message: String? = null, transform: ((T) -> Any)? = null): T {
+fun <T> T.dump(message: String? = null): T {
     if (message != null) print(message)
-    val objectToPrint = if (transform == null) this else transform(this)
-    println(objectToPrint)
+    println(this)
     return this
 }
 
