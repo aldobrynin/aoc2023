@@ -37,3 +37,9 @@ fun lcm(a: Long, b: Long): Long = a * b / gcd(a, b)
 fun Iterable<Long>.lcm(): Long = this.fold(1L, ::lcm)
 
 fun gcd(a: Long, b: Long): Long = if (b == 0L) a else gcd(b, a % b)
+
+fun <T> Array<T>.swap(i: Int, j: Int) {
+    val tmp = this[i]
+    this[i] = this[j]
+    this[j] = tmp
+}
